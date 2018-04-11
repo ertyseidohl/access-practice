@@ -25,14 +25,13 @@ gulp.task(
 	'files',
 	['clean', 'ts'],
 	function () {
-
-			return gulp
-				.src([
-					`./src/**/*.html`,
-					`./src/**/*.css`,
-					`./src/**/*.js`
-				])
-				.pipe(gulp.dest('./dest/'));
+		return gulp
+			.src([
+				'./src/**/*.html',
+				'./src/**/*.css',
+				'./src/**/*.js'
+			])
+			.pipe(gulp.dest('./dest/'));
 	}
 );
 
@@ -40,21 +39,19 @@ gulp.task(
 	'ts',
 	['clean'],
 	function () {
+		var tsResult = gulp.src([
+			'./src/**/*.ts'
+			])
+			.pipe(sourcemaps.init())
+			.pipe(ts({
+				module: "commonjs",
+				noEmitOnError: true,
+				moduleResolution: 'node'
+			}));
 
-			var tsResult = gulp.src([
-				'./src/**/*.ts'
-				])
-				.pipe(sourcemaps.init())
-				.pipe(ts({
-					module: "commonjs",
-					noEmitOnError: true,
-					moduleResolution: 'node'
-				}));
-
-			return tsResult.js
-				.pipe(sourcemaps.write())
-				.pipe(gulp.dest('./temp/'));
-
+		return tsResult.js
+			.pipe(sourcemaps.write())
+			.pipe(gulp.dest('./temp/'));
 	}
 );
 
@@ -74,17 +71,17 @@ gulp.task(
 	'browserify',
 	['clean', 'ts'],
 	function() {
-			var b = browserify({
-				entries: './temp/main.js',
-				debug: true
-			});
+		var b = browserify({
+			entries: './temp/main.js',
+			debug: true
+		});
 
-			return b.bundle()
-				.pipe(source('script.js'))
-				.pipe(buffer())
-				.pipe(sourcemaps.init({loadMaps: true}))
-				.pipe(sourcemaps.write())
-				.pipe(gulp.dest('./dest/'));
+		return b.bundle()
+			.pipe(source('script.js'))
+			.pipe(buffer())
+			.pipe(sourcemaps.init({loadMaps: true}))
+			.pipe(sourcemaps.write())
+			.pipe(gulp.dest('./dest/'));
 	}
 );
 
